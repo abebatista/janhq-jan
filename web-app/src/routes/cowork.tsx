@@ -1172,7 +1172,12 @@ function CoworkPage() {
   // (active providers, no embedding models, remote providers only with a key),
   // narrowed to tool-capable models since runRequest refuses the rest anyway.
   const allModels = useMemo(() => {
-    const items: { providerName: string; id: string; label: string }[] = []
+    const items: {
+      providerName: string
+      providerTitle: string
+      id: string
+      label: string
+    }[] = []
     providers.forEach((p) => {
       if (!p.active) return
       const isPredefined = predefinedProviders.some((e) =>
@@ -1188,6 +1193,7 @@ function CoworkPage() {
         if (!m.capabilities?.includes('tools')) return
         items.push({
           providerName: p.provider,
+          providerTitle: getProviderTitle(p),
           id: m.id,
           label: getModelDisplayName(m),
         })
@@ -1221,7 +1227,7 @@ function CoworkPage() {
         .map((m) => ({
           key: `${m.providerName}/${m.id}`,
           label: m.label,
-          description: getProviderTitle(m.providerName),
+          description: m.providerTitle,
           kind: 'model' as const,
           onSelect: () => switchModel(m.providerName, m.id),
         }))
